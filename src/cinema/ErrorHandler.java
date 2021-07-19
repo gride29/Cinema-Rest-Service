@@ -15,4 +15,11 @@ public class ErrorHandler {
     private Error handleInvalidSeatException(InvalidSeatException e) {
         return new Error(e.getMessage());
     }
+
+    @ExceptionHandler(InvalidTokenException.class)
+    @ResponseStatus(value = HttpStatus.BAD_REQUEST)
+    @ResponseBody
+    private Error handleInvalidTokenException(InvalidTokenException e) {
+        return new Error(e.getMessage());
+    }
 }

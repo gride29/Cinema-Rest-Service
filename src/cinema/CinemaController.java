@@ -40,11 +40,34 @@ public class CinemaController {
             throw new InvalidSeatException("The ticket has been already purchased!");
         } else {
             availableSeats.remove(selectedSeat);
-            ticketList.add(new Ticket(selectedSeat));
+            String token = UUID.randomUUID().toString();
+            ticketList.add(new Ticket(selectedSeat, token));
             return Map.of(
-                    "row", row,
-                    "column", column,
-                    "price", selectedSeat.getPrice()
+                    "token", token,
+                    "ticket", selectedSeat
+            );
+        }
+    }
+
+    @PostMapping("/return")
+    public Map<String, ?> refundTicket(@RequestBody Map<String, String> token) {
+        String tokenString = token.get("token");
+        Ticket returnedTicket = null;
+
+        for (Ticket ticket: ticketList) {
+            if (ticket.getToken().equals(tokenString)) {
+                returnedTicket = ticket;
+            }
+        }
+
+        if (returnedTicket == null) {
+            throw new InvalidTokenException("Wrong token!");
+        } else {
+            ticketList.remove(returnedTicket);
+            Seat seat = returnedTicket.getSeat();
+            cinema.getAvailableSeats().add(seat);
+            return Map.of(
+                    "returned_ticket", seat
             );
         }
     }
