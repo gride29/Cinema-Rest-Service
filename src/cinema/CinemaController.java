@@ -71,4 +71,25 @@ public class CinemaController {
             );
         }
     }
+
+    @PostMapping("/stats")
+    public Map<String, ?> showStats(@RequestParam(required = false) String password) {
+        if (!"super_secret".equals(password)) {
+            throw new InvalidPasswordException("The password is wrong!");
+        }
+
+        int income = 0;
+        for (Ticket ticket : ticketList) {
+            income += ticket.getSeat().getPrice();
+        }
+
+        int availableSeats = cinema.getAvailableSeats().size();
+        int purchasedTickets = ticketList.size();
+
+        return Map.of(
+                "current_income", income,
+                "number_of_available_seats", availableSeats,
+                "number_of_purchased_tickets", purchasedTickets
+        );
+    }
 }

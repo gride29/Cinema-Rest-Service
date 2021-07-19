@@ -22,4 +22,11 @@ public class ErrorHandler {
     private Error handleInvalidTokenException(InvalidTokenException e) {
         return new Error(e.getMessage());
     }
+
+    @ExceptionHandler(InvalidPasswordException.class)
+    @ResponseStatus(value = HttpStatus.UNAUTHORIZED)
+    @ResponseBody
+    private Error handleInvalidPasswordException(InvalidPasswordException e) {
+        return new Error(e.getMessage());
+    }
 }
